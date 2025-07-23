@@ -11,7 +11,7 @@ use App\Http\Controllers\BookingController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 })->name('home');
 
 Route::view('dashboard', 'dashboard')
@@ -46,14 +46,24 @@ Route::middleware(['auth', 'verified', 'role:trainer'])->group(function () {
     Route::get('/trainer/dashboard', function () {
         return view('trainer.dashboard');
     })->name('trainer.dashboard');
-    // In routes/web.php inside the 'role:trainer' middleware group
-Route::get('/trainer/bookings', [\App\Http\Controllers\TrainerBookingController::class, 'index'])->name('trainer.bookings');
 
+    // ✅ Trainer Booking Management Routes
+    Route::get('/trainer/bookings', [\App\Http\Controllers\TrainerBookingController::class, 'index'])
+        ->name('trainer.bookings');
+    Route::post('/trainer/bookings/{booking}/approve', [\App\Http\Controllers\TrainerBookingController::class, 'approve'])
+        ->name('trainer.bookings.approve');
+    Route::post('/trainer/bookings/{booking}/decline', [\App\Http\Controllers\TrainerBookingController::class, 'decline'])
+        ->name('trainer.bookings.decline');
 });
+
 // Booking Routes for Clients
 Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+
+    // ✅ Client Booking History
+    Route::get('/client/bookings', [\App\Http\Controllers\ClientBookingController::class, 'history'])
+        ->name('client.bookings.history');
 });
 
 //Route::get('/register-trainer', [TrainerRegistrationController::class, 'show'])->name('trainer.register');
@@ -108,5 +118,12 @@ Route::post('/login', function (Request $request) {
         'email' => 'These credentials do not match our records.',
     ]);
 });
+
+Route::post('/notifications/{id}/read', function ($id) {
+    $notification = Auth::user()->notifications()->findOrFail($id);
+    $notification->markAsRead();
+    return back();
+})->name('notifications.markAsRead');
+
 
 

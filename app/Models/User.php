@@ -67,12 +67,13 @@ class User extends Authenticatable
         ];
     }
     public function clientBookings()
-{
-    return $this->hasMany(\App\Models\Booking::class, 'client_id');
-}
-
-public function trainerBookings()
-{
-    return $this->hasMany(\App\Models\Booking::class, 'trainer_id');
-}
+    {
+        return $this->hasMany(\App\Models\Booking::class, 'client_id');
+    }
+    
+    public function trainerBookings()
+    {
+        return $this->hasMany(\App\Models\Booking::class, 'trainer_id');
+    }
+    
 }

@@ -17,12 +17,14 @@ class Booking extends Model
         'status',
     ];
 
-    // ✅ This is what Laravel expects when you do $booking->client
-    public function client() {
-        return $this->belongsTo(\App\Models\User::class, 'client_id');
-    }
+    public function trainer()
+{
+    return $this->belongsTo(User::class, 'trainer_id');
+}
 
-    public function trainer() {
-        return $this->belongsTo(\App\Models\User::class, 'trainer_id');
-    }
+public function client()
+{
+    return $this->belongsTo(\App\Models\User::class, 'client_id');
+}
+
 }
