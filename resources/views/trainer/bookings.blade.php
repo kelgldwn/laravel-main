@@ -35,7 +35,7 @@
                             </div>
                             <div>
                                 <p class="text-2xl font-bold text-gray-900">{{ $bookings->where('status', 'approved')->count() }}</p>
-                                <p class="text-sm text-gray-600">Approved</p>
+                                <p class="text-sm text-gray-600"style="color:green">Approved</p>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                             </div>
                             <div>
                                 <p class="text-2xl font-bold text-gray-900">{{ $bookings->where('status', 'pending')->count() }}</p>
-                                <p class="text-sm text-gray-600">Pending</p>
+                                <p class="text-sm text-gray-600"style="color:orange">Pending</p>
                             </div>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                             </div>
                             <div>
                                 <p class="text-2xl font-bold text-gray-900">{{ $bookings->where('status', 'declined')->count() }}</p>
-                                <p class="text-sm text-gray-600">Declined</p>
+                                <p class="text-sm text-gray-600"style="color:red">Declined</p>
                             </div>
                         </div>
                     </div>
@@ -88,13 +88,13 @@
                         <i class="fas fa-list mr-2"></i>All Bookings ({{ $bookings->count() }})
                     </button>
                     <button class="flex-1 px-6 py-4 text-center font-semibold text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 transition-all duration-300" onclick="filterBookings('pending')">
-                        <i class="fas fa-clock mr-2"></i>Pending ({{ $bookings->where('status', 'pending')->count() }})
+                        <i class="fas fa-clock mr-2"></i><span style="color:orange">Pending</span> ({{ $bookings->where('status', 'pending')->count() }})
                     </button>
                     <button class="flex-1 px-6 py-4 text-center font-semibold text-gray-600 hover:text-green-600 hover:bg-green-50 transition-all duration-300" onclick="filterBookings('approved')">
-                        <i class="fas fa-check mr-2"></i>Approved ({{ $bookings->where('status', 'approved')->count() }})
+                        <i class="fas fa-check mr-2"></i><span style="color:green">Approved</span> ({{ $bookings->where('status', 'approved')->count() }})
                     </button>
                     <button class="flex-1 px-6 py-4 text-center font-semibold text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-300" onclick="filterBookings('declined')">
-                        <i class="fas fa-times mr-2"></i>Declined ({{ $bookings->where('status', 'declined')->count() }})
+                        <i class="fas fa-times mr-2"></i><span style="color:red">Declined</span> ({{ $bookings->where('status', 'declined')->count() }})
                     </button>
                 </div>
             </div>
@@ -177,7 +177,7 @@
                                     </span>
                                     @else
                                     <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800 animate-pulse">
-                                        <i class="fas fa-clock mr-2"></i>Pending
+                                        <i class="fas fa-clock mr-2"></i><span style="color:orange">Pending</span>
                                     </span>
                                     @endif
                                 </td>
@@ -187,13 +187,13 @@
                                         <form action="{{ route('trainer.bookings.approve', $booking) }}" method="POST" class="inline">
                                             @csrf
                                             <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                                                <i class="fas fa-check mr-2"></i>Approve
+                                                <i class="fas fa-check mr-2"></i><span style="color:green">Approve</span>
                                             </button>
                                         </form>
                                         <form action="{{ route('trainer.bookings.decline', $booking) }}" method="POST" class="inline">
                                             @csrf
                                             <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                                                <i class="fas fa-times mr-2"></i>Decline
+                                                <i class="fas fa-times mr-2"></i><span style="color:red">Decline</span>
                                             </button>
                                         </form>
                                     </div>
@@ -268,7 +268,7 @@
                         <form action="{{ route('trainer.bookings.approve', $booking) }}" method="POST" class="flex-1">
                             @csrf
                             <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105">
-                                <i class="fas fa-check mr-2"></i>Approve
+                                <i class="fas fa-check mr-2"></i><span >Approve
                             </button>
                         </form>
                         <form action="{{ route('trainer.bookings.decline', $booking) }}" method="POST" class="flex-1">

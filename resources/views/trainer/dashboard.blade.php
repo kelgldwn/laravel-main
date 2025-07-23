@@ -23,6 +23,24 @@
 
     @php
         $role = Auth::user()?->getRoleNames()->first();
+    
+        // Get actual data for trainer dashboard
+        if ($role === 'trainer') {
+            $todaySessions = \App\Models\Booking::where('trainer_id', Auth::id())
+                ->whereDate('booking_date', today())
+                ->where('status', 'confirmed')
+                ->count();
+                
+            $pendingBookings = \App\Models\Booking::where('trainer_id', Auth::id())
+                ->where('status', 'pending')
+                ->count();
+                
+            $todaySchedule = \App\Models\Booking::where('trainer_id', Auth::id())
+                ->whereDate('booking_date', today())
+                ->with('client')
+                ->orderBy('booking_time')
+                ->get();
+        }
     @endphp
 
     @if ($role === 'trainer')
@@ -46,32 +64,9 @@
                     <a href="{{ route('trainer.bookings') }}" class="flex items-center space-x-3 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-3 rounded-xl transition-all duration-300">
                         <i class="fas fa-calendar-check"></i>
                         <span>Manage Bookings</span>
-                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">5</span>
-                    </a>
-                    
-                    <a href="#" class="flex items-center space-x-3 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-users"></i>
-                        <span>My Clients</span>
-                    </a>
-                    
-                    <a href="#" class="flex items-center space-x-3 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Performance</span>
-                    </a>
-                    
-                    <a href="#" class="flex items-center space-x-3 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span>Earnings</span>
-                    </a>
-                    
-                    <a href="#" class="flex items-center space-x-3 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-star"></i>
-                        <span>Reviews</span>
-                    </a>
-                    
-                    <a href="#" class="flex items-center space-x-3 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
+                        @if($pendingBookings > 0)
+                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">{{ $pendingBookings }}</span>
+                        @endif
                     </a>
                 </nav>
 
@@ -93,9 +88,9 @@
             <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl p-8 mb-8 text-white shadow-2xl">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-3xl font-bold mb-2">Welcome back, {{ Auth::user()->name }}! 🔥</h3>
-                        <p class="text-orange-100 text-lg">Ready to transform lives and build your fitness empire today?</p>
-                        <div class="flex items-center mt-4 space-x-6">
+                        <h3 class="text-3xl font-bold mb-2" style="color:black">Welcome back,<span style="font-style:italic"> {{ Auth::user()->name }}!</span></h3>
+                        <p class="text-orange-100 text-lg" style="color:orange">Ready to transform lives and build your fitness empire today?</p>
+                        <div class="flex items-center mt-4 space-x-6" style="color:orange">
                             <div class="flex items-center">
                                 <i class="fas fa-calendar-day mr-2"></i>
                                 <span>{{ now()->format('l, F j, Y') }}</span>
@@ -114,15 +109,15 @@
                 </div>
             </div>
 
-            {{-- Quick Stats --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {{-- Quick Stats - With Real Data --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-medium">Today's Sessions</p>
-                            <p class="text-3xl font-bold text-gray-900">8</p>
-                            <p class="text-green-600 text-sm font-medium mt-1">
-                                <i class="fas fa-arrow-up mr-1"></i>+2 from yesterday
+                            <p class="text-3xl font-bold text-gray-900">{{ $todaySessions ?? 0 }}</p>
+                            <p class="text-blue-600 text-sm font-medium mt-1">
+                                <i class="fas fa-calendar-check mr-1"></i>Confirmed sessions
                             </p>
                         </div>
                         <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -134,51 +129,14 @@
                 <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-gray-600 text-sm font-medium">Active Clients</p>
-                            <p class="text-3xl font-bold text-gray-900">42</p>
-                            <p class="text-green-600 text-sm font-medium mt-1">
-                                <i class="fas fa-arrow-up mr-1"></i>+5 this week
+                            <p class="text-gray-600 text-sm font-medium">Pending Bookings</p>
+                            <p class="text-3xl font-bold text-gray-900">{{ $pendingBookings ?? 0 }}</p>
+                            <p class="text-orange-600 text-sm font-medium mt-1">
+                                <i class="fas fa-clock mr-1"></i>Awaiting approval
                             </p>
                         </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-users text-green-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm font-medium">This Month</p>
-                            <p class="text-3xl font-bold text-gray-900">$3,240</p>
-                            <p class="text-green-600 text-sm font-medium mt-1">
-                                <i class="fas fa-arrow-up mr-1"></i>+12% vs last month
-                            </p>
-                        </div>
-                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-dollar-sign text-purple-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm font-medium">Rating</p>
-                            <p class="text-3xl font-bold text-gray-900">4.9</p>
-                            <div class="flex items-center mt-1">
-                                <div class="flex text-yellow-400">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span class="text-gray-500 text-sm ml-2">(127 reviews)</span>
-                            </div>
-                        </div>
-                        <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-star text-yellow-600 text-xl"></i>
+                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-hourglass-half text-orange-600 text-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -197,79 +155,44 @@
                         </div>
 
                         <div class="p-6">
-                            <div class="space-y-4">
-                                {{-- Sample Schedule Items --}}
-                                <div class="flex items-center justify-between p-4 bg-green-50 border-l-4 border-green-500 rounded-lg hover:bg-green-100 transition-colors duration-300">
-                                    <div class="flex items-center space-x-4">
-                                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-                                            <span class="text-white font-bold">JD</span>
+                            @if($todaySchedule && $todaySchedule->count() > 0)
+                                <div class="space-y-4">
+                                    @foreach($todaySchedule as $session)
+                                    <div class="flex items-center justify-between p-4 bg-{{ $session->status === 'confirmed' ? 'green' : ($session->status === 'pending' ? 'yellow' : 'gray') }}-50 border-l-4 border-{{ $session->status === 'confirmed' ? 'green' : ($session->status === 'pending' ? 'yellow' : 'gray') }}-500 rounded-lg hover:bg-{{ $session->status === 'confirmed' ? 'green' : ($session->status === 'pending' ? 'yellow' : 'gray') }}-100 transition-colors duration-300">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-12 h-12 bg-{{ $session->status === 'confirmed' ? 'green' : ($session->status === 'pending' ? 'yellow' : 'gray') }}-500 rounded-full flex items-center justify-center">
+                                                <span class="text-white font-bold">{{ substr($session->client->name ?? 'N/A', 0, 1) }}{{ substr(explode(' ', $session->client->name ?? 'N A')[1] ?? 'A', 0, 1) }}</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-gray-900">{{ $session->client->name ?? 'Unknown Client' }}</h4>
+                                                <p class="text-gray-600 text-sm">Training Session</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-900">John Doe</h4>
-                                            <p class="text-gray-600 text-sm">Strength Training</p>
+                                        <div class="text-right">
+                                            <p class="font-bold text-gray-900">{{ \Carbon\Carbon::parse($session->booking_time)->format('g:i A') }}</p>
+                                            <p class="text-{{ $session->status === 'confirmed' ? 'green' : ($session->status === 'pending' ? 'yellow' : 'gray') }}-600 text-sm font-medium capitalize">{{ $session->status }}</p>
                                         </div>
                                     </div>
-                                    <div class="text-right">
-                                        <p class="font-bold text-gray-900">9:00 AM</p>
-                                        <p class="text-green-600 text-sm font-medium">Confirmed</p>
-                                    </div>
+                                    @endforeach
                                 </div>
-
-                                <div class="flex items-center justify-between p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg hover:bg-blue-100 transition-colors duration-300">
-                                    <div class="flex items-center space-x-4">
-                                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
-                                            <span class="text-white font-bold">SM</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-900">Sarah Miller</h4>
-                                            <p class="text-gray-600 text-sm">Cardio & HIIT</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="font-bold text-gray-900">11:00 AM</p>
-                                        <p class="text-blue-600 text-sm font-medium">Confirmed</p>
-                                    </div>
+                                
+                                <div class="mt-6 text-center">
+                                    <a href="{{ route('trainer.bookings') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105">
+                                        <i class="fas fa-calendar-plus mr-2"></i>
+                                        Manage All Bookings
+                                    </a>
                                 </div>
-
-                                <div class="flex items-center justify-between p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg hover:bg-yellow-100 transition-colors duration-300">
-                                    <div class="flex items-center space-x-4">
-                                        <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center">
-                                            <span class="text-white font-bold">MJ</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-900">Mike Johnson</h4>
-                                            <p class="text-gray-600 text-sm">Weight Loss Program</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="font-bold text-gray-900">2:00 PM</p>
-                                        <p class="text-yellow-600 text-sm font-medium">Pending</p>
-                                    </div>
+                            @else
+                                <div class="text-center py-12">
+                                    <i class="fas fa-calendar-day text-gray-300 text-6xl mb-4"></i>
+                                    <h4 class="text-xl font-semibold text-gray-600 mb-2">No Sessions Scheduled</h4>
+                                    <p class="text-gray-500 mb-6">You don't have any sessions scheduled for today.</p>
+                                    <a href="{{ route('trainer.bookings') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105">
+                                        <i class="fas fa-calendar-plus mr-2"></i>
+                                        View All Bookings
+                                    </a>
                                 </div>
-
-                                <div class="flex items-center justify-between p-4 bg-purple-50 border-l-4 border-purple-500 rounded-lg hover:bg-purple-100 transition-colors duration-300">
-                                    <div class="flex items-center space-x-4">
-                                        <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
-                                            <span class="text-white font-bold">LW</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-900">Lisa Wilson</h4>
-                                            <p class="text-gray-600 text-sm">Yoga & Flexibility</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="font-bold text-gray-900">4:00 PM</p>
-                                        <p class="text-purple-600 text-sm font-medium">Confirmed</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-6 text-center">
-                                <a href="{{ route('trainer.bookings') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105">
-                                    <i class="fas fa-calendar-plus mr-2"></i>
-                                    Manage All Bookings
-                                </a>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -321,7 +244,7 @@
                         </div>
                     </div>
 
-                    {{-- Quick Actions --}}
+                    {{-- Quick Actions - Simplified --}}
                     <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-rocket mr-2 text-orange-500"></i>Quick Actions
@@ -336,14 +259,6 @@
                                 <i class="fas fa-arrow-right text-orange-600"></i>
                             </button>
                             
-                            <button class="w-full flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 rounded-xl transition-colors duration-300">
-                                <div class="flex items-center">
-                                    <i class="fas fa-chart-line text-green-600 mr-3"></i>
-                                    <span class="font-medium text-gray-800">View Analytics</span>
-                                </div>
-                                <i class="fas fa-arrow-right text-green-600"></i>
-                            </button>
-                            
                             <button class="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors duration-300">
                                 <div class="flex items-center">
                                     <i class="fas fa-message text-blue-600 mr-3"></i>
@@ -351,47 +266,6 @@
                                 </div>
                                 <i class="fas fa-arrow-right text-blue-600"></i>
                             </button>
-                            
-                            <button class="w-full flex items-center justify-between p-3 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors duration-300">
-                                <div class="flex items-center">
-                                    <i class="fas fa-cog text-purple-600 mr-3"></i>
-                                    <span class="font-medium text-gray-800">Profile Settings</span>
-                                </div>
-                                <i class="fas fa-arrow-right text-purple-600"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    {{-- Performance Widget --}}
-                    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                            <i class="fas fa-trophy mr-2 text-yellow-500"></i>This Week
-                        </h3>
-                        
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-600">Sessions Completed</span>
-                                <span class="font-bold text-gray-900">28/30</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full" style="width: 93%"></div>
-                            </div>
-                            
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-600">Client Satisfaction</span>
-                                <span class="font-bold text-gray-900">98%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-2 rounded-full" style="width: 98%"></div>
-                            </div>
-                            
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-600">Revenue Goal</span>
-                                <span class="font-bold text-gray-900">$810/$900</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-purple-400 to-purple-600 h-2 rounded-full" style="width: 90%"></div>
-                            </div>
                         </div>
                     </div>
                 </div>

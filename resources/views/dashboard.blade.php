@@ -47,16 +47,6 @@
                     </a>
                     
                     <a href="#" class="flex items-center space-x-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-4 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-star"></i>
-                        <span>Favorite Trainers</span>
-                    </a>
-                    
-                    <a href="#" class="flex items-center space-x-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-4 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Progress Tracking</span>
-                    </a>
-                    
-                    <a href="#" class="flex items-center space-x-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-4 py-3 rounded-xl transition-all duration-300">
                         <i class="fas fa-cog"></i>
                         <span>Settings</span>
                     </a>
@@ -85,8 +75,8 @@
             </div>
             @endif
 
-            {{-- Quick Stats --}}
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            {{-- Quick Stats - Removed Favorite Trainers --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div>
@@ -107,18 +97,6 @@
                         </div>
                         <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                             <i class="fas fa-fire text-green-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm font-medium">Favorite Trainers</p>
-                            <p class="text-3xl font-bold text-gray-900">3</p>
-                        </div>
-                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-heart text-purple-600 text-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -181,11 +159,11 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                            <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl" style="color:black">
                                 <i class="fas fa-rocket mr-3"></i>Book This Session
                             </button>
                         </form>
-                    </div>
+                    </div>  
                 </div>
 
                 {{-- Notifications & Quick Actions --}}
@@ -230,7 +208,7 @@
                         </div>
                     </div>
 
-                    {{-- Quick Actions --}}
+                    {{-- Quick Actions - Removed Favorite Trainers and Progress Tracking --}}
                     <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-bolt mr-2 text-yellow-500"></i>Quick Actions
@@ -244,7 +222,7 @@
                                 </div>
                                 <i class="fas fa-arrow-right text-blue-600"></i>
                             </a>
-                            
+
                             <a href="#" class="flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 rounded-xl transition-colors duration-300">
                                 <div class="flex items-center">
                                     <i class="fas fa-star text-green-600 mr-3"></i>
@@ -252,11 +230,11 @@
                                 </div>
                                 <i class="fas fa-arrow-right text-green-600"></i>
                             </a>
-                            
+
                             <a href="#" class="flex items-center justify-between p-3 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors duration-300">
                                 <div class="flex items-center">
-                                    <i class="fas fa-chart-line text-purple-600 mr-3"></i>
-                                    <span class="font-medium text-gray-800">View Progress</span>
+                                    <i class="fas fa-cog text-purple-600 mr-3"></i>
+                                    <span class="font-medium text-gray-800">Settings</span>
                                 </div>
                                 <i class="fas fa-arrow-right text-purple-600"></i>
                             </a>
@@ -350,38 +328,38 @@
     @endif
 
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .hover-scale {
-            transition: transform 0.3s ease;
-        }
-        
-        .hover-scale:hover {
-            transform: scale(1.02);
-        }
+    .gradient-text {
+        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hover-scale {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.02);
+    }
     </style>
 
     <script>
-        // Add some interactive effects
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate stats on load
-            const stats = document.querySelectorAll('.grid .bg-white');
-            stats.forEach((stat, index) => {
+    // Add some interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate stats on load
+        const stats = document.querySelectorAll('.grid .bg-white');
+        stats.forEach((stat, index) => {
+            setTimeout(() => {
+                stat.style.opacity = '0';
+                stat.style.transform = 'translateY(20px)';
+                stat.style.transition = 'all 0.6s ease';
                 setTimeout(() => {
-                    stat.style.opacity = '0';
-                    stat.style.transform = 'translateY(20px)';
-                    stat.style.transition = 'all 0.6s ease';
-                    setTimeout(() => {
-                        stat.style.opacity = '1';
-                        stat.style.transform = 'translateY(0)';
-                    }, 100);
-                }, index * 100);
-            });
+                    stat.style.opacity = '1';
+                    stat.style.transform = 'translateY(0)';
+                }, 100);
+            }, index * 100);
         });
+    });
     </script>
 </x-app-layout>

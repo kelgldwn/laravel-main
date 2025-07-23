@@ -52,5 +52,22 @@ class BookingController extends Controller
 
         return redirect()->back()->with('success', 'Booking request sent!');
     }
+    public function getAvailableTrainers(Request $request)
+{
+    $date = $request->booking_date;
+    $time = $request->booking_time;
+
+    // Get IDs of trainers already booked at this slot
+    $bookedTrainerIds = Booking::where('booking_date', $date)
+        ->where('booking_time', $time)
+        ->pluck('trainer_id');
+
+    // Get trainers who are not booked
+    $availableTrainers = User::role('trainer')
+        ->whereNotIn('id', $bookedTrainerIds)
+        ->get();
+
+    return response()->json($availableTrainers);
+}
 }
 
