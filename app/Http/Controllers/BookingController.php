@@ -69,5 +69,27 @@ class BookingController extends Controller
 
     return response()->json($availableTrainers);
 }
+
+public function dashboard()
+{
+    $userId = Auth::id();
+
+    $totalBookings = Booking::where('client_id', $userId)->count();
+
+    $bookingsThisMonth = Booking::where('client_id', $userId)
+        ->whereMonth('booking_date', now()->month)
+        ->whereYear('booking_date', now()->year)
+        ->count();
+
+    // Assuming each booking is 1 hour; customize if you store duration
+    $totalHours = Booking::where('client_id', $userId)->count();
+
+    return view('dashboard', compact(
+        'totalBookings',
+        'bookingsThisMonth',
+        'totalHours'
+    ));
+}
+
 }
 

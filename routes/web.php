@@ -70,8 +70,8 @@ Route::post('/logout', function (Request $request) {
 })->name('logout');
 
 // Dashboard routes
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth:web', 'verified'])
+Route::get('/dashboard', [BookingController::class, 'dashboard'])
+    ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
 Route::middleware(['auth:web'])->group(function () {

@@ -75,44 +75,48 @@
             </div>
             @endif
 
-            {{-- Quick Stats - Removed Favorite Trainers --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm font-medium">Total Bookings</p>
-                            <p class="text-3xl font-bold text-gray-900">24</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm font-medium">This Month</p>
-                            <p class="text-3xl font-bold text-gray-900">8</p>
-                        </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-fire text-green-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm font-medium">Hours Trained</p>
-                            <p class="text-3xl font-bold text-gray-900">36</p>
-                        </div>
-                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-clock text-orange-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
+            {{-- Quick Stats --}}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <!-- Total Bookings -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-600 text-sm font-medium">Total Bookings</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $totalBookings }}</p>
             </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookings This Month -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-600 text-sm font-medium">This Month</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $bookingsThisMonth }}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-fire text-green-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hours Trained -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-600 text-sm font-medium">Hours Trained</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $totalHours }}</p>
+            </div>
+            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-clock text-orange-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {{-- Enhanced Booking Form --}}
