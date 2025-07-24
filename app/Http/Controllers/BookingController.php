@@ -23,35 +23,45 @@ class BookingController extends Controller
 
     
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'trainer_id' => 'required|exists:users,id',
-            'booking_date' => 'required|date',
-            'booking_time' => 'required',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'trainer_id' => 'required|exists:users,id',
+        'booking_date' => 'required|date',
+        'booking_time' => 'required',
+    ]);
 
-        $booking = Booking::create([
-            'trainer_id' => $request->trainer_id,
-            'client_id' => Auth::id(),
-            'booking_date' => $request->booking_date,
-            'booking_time' => $request->booking_time,
-            'status' => 'pending',
-        ]);
-        
-        // Load trainer relationship
-        $booking->load('trainer');
-        
-        // Now safe to use
-        $booking->trainer->notify(new BookingStatusUpdated($booking));
-        
-        $trainer = User::find($request->trainer_id);
-        if ($trainer) {
-            $trainer->notify(new NewBookingNotification($booking));
-        }
+    $existingBooking = Booking::where('client_id', Auth::id())
+    ->where('trainer_id', $request->trainer_id)
+    ->where('booking_date', $request->booking_date)
+    ->whereIn('status', ['pending', 'approved']) // 🚫 still active bookings
+    ->first();
 
-        return redirect()->back()->with('success', 'Booking request sent!');
+    if ($existingBooking) {
+        return redirect()->back()->withErrors([
+            'duplicate' => 'You already have a booking with this trainer at the selected time.',
+        ]);
     }
+
+    $booking = Booking::create([
+        'trainer_id' => $request->trainer_id,
+        'client_id' => Auth::id(),
+        'booking_date' => $request->booking_date,
+        'booking_time' => $request->booking_time,
+        'status' => 'pending',
+    ]);
+
+    $booking->load('trainer');
+
+    $booking->trainer->notify(new BookingStatusUpdated($booking));
+
+    $trainer = User::find($request->trainer_id);
+    if ($trainer) {
+        $trainer->notify(new NewBookingNotification($booking));
+    }
+
+    return redirect()->back()->with('success', 'Booking request sent!');
+}
     public function getAvailableTrainers(Request $request)
 {
     $date = $request->booking_date;

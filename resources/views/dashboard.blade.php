@@ -141,11 +141,18 @@
                                     <option value="">Choose a trainer...</option>
                                     @foreach ($trainers as $trainer)
                                     <option value="{{ $trainer->id }}">
-                                        {{ $trainer->name }} - ⭐ 4.9 Rating
+                                        {{ $trainer->name }} 
                                     </option>
                                     @endforeach
                                 </select>
                             </div>
+
+                            {{-- ✅ Show duplicate booking error --}}
+                                    @if ($errors->has('duplicate'))
+                                        <div class="mb-4 text-red-500 font-semibold">
+                                            {{ $errors->first('duplicate') }}
+                                        </div>
+                                    @endif
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
