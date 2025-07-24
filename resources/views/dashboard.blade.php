@@ -159,7 +159,11 @@
                                     <label class="block text-sm font-bold text-gray-700 mb-3">
                                         <i class="fas fa-calendar mr-2 text-green-600"></i>Select Date
                                     </label>
-                                    <input type="date" name="booking_date" class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300" required>
+                                    <input type="date" name="booking_date" 
+                                        min="{{ now()->format('Y-m-d') }}" 
+                                        class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300" 
+                                        required>
+
                                 </div>
 
                                 <div>

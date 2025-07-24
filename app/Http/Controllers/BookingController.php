@@ -27,8 +27,10 @@ public function store(Request $request)
 {
     $request->validate([
         'trainer_id' => 'required|exists:users,id',
-        'booking_date' => 'required|date',
+        'booking_date' => 'required|date|after_or_equal:today',
         'booking_time' => 'required',
+    ], [
+        'booking_date.after_or_equal' => 'You cannot book a session in the past.',
     ]);
 
     $existingBooking = Booking::where('client_id', Auth::id())
@@ -99,6 +101,14 @@ public function dashboard()
         'bookingsThisMonth',
         'totalHours'
     ));
+}
+
+public function index()
+{
+    $bookings = Booking::where('client_id', auth()->id())->latest()->get();
+    $trainers = User::where('role', 'trainer')->get(); // assuming you use a 'role' column
+
+    return view('bookings.index', compact('bookings', 'trainers'));
 }
 
 }
