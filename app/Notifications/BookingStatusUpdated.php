@@ -31,7 +31,7 @@ class BookingStatusUpdated extends Notification
             ->line('Your booking with ' . $this->booking->trainer->name . ' has been ' . $this->booking->status . '.')
             ->line('Date: ' . $this->booking->booking_date)
             ->line('Time: ' . $this->booking->booking_time)
-            ->action('View Booking', url('/dashboard')) // You can customize this URL
+            ->action('View Booking', url('/client/bookings')) // You can customize this URL
             ->line('Thank you for using our platform.');
     }
 }

@@ -114,12 +114,25 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                ->disabled(fn ($record) => $record->roles->contains('name', 'admin'))
+                ->tooltip(fn ($record) => $record->roles->contains('name', 'admin') ? 'Admin users cannot be deleted' : null)
+                ->before(function ($action, $record) {
+                    if ($record->roles->contains('name', 'admin')) {
+                        $action->failureNotificationTitle('Admin users cannot be deleted.');
+                        $action->cancel();
+                    }
+                }),            
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make()
+    ->before(function ($action, $records) {
+        if ($records->contains(fn ($record) => $record->roles->contains('name', 'admin'))) {
+            $action->failureNotificationTitle('One or more selected users are admins and cannot be deleted.');
+            $action->cancel();
+        }
+    }),
+
             ])
             ->defaultSort('created_at', 'desc');
     }
