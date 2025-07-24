@@ -28,6 +28,10 @@ class TrainerBookingController extends Controller
     {
         $this->authorizeTrainer($booking);
         $booking->update(['status' => 'approved']);
+
+        // Notify the client
+        $booking->load('client', 'trainer'); // ensure relationships are loaded
+        $booking->client->notify(new BookingStatusUpdated($booking));
     
         return back()->with('success', 'Booking approved.');
     }
@@ -36,6 +40,10 @@ class TrainerBookingController extends Controller
     {
         $this->authorizeTrainer($booking);
         $booking->update(['status' => 'declined']);
+
+        // Notify the client
+        $booking->load('client', 'trainer');
+        $booking->client->notify(new BookingStatusUpdated($booking));
     
         return back()->with('success', 'Booking declined.');
     }

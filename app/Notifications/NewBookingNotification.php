@@ -5,7 +5,7 @@ namespace App\Notifications;
 use App\Models\Booking;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\DatabaseMessage;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class NewBookingNotification extends Notification
 {
@@ -20,16 +20,18 @@ class NewBookingNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database'];
+        return ['mail']; // Only sending via mail
     }
 
-    public function toDatabase($notifiable)
+    public function toMail($notifiable)
     {
-        // Line 29 is probably here:
-        return [
-            'message' => 'New booking request from ' . ($this->booking->client->name ?? 'Unknown') . '.',
-            'booking_id' => $this->booking->id,
-            'status' => $this->booking->status,
-        ];
+        return (new MailMessage)
+            ->subject('New Booking Request')
+            ->greeting('Hello ' . $notifiable->name . ',')
+            ->line('You have a new booking request from ' . ($this->booking->client->name ?? 'a client') . '.')
+            ->line('Date: ' . $this->booking->booking_date)
+            ->line('Time: ' . $this->booking->booking_time)
+            ->action('View Booking', url('/trainer/bookings')) // Adjust this URL as needed
+            ->line('Thank you for using our platform!');
     }
 }
