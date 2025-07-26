@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('TrainerBook Admin')
-            ->brandLogo(asset('images/logo.png'))
+            ->brandLogo(asset('images/vicegandajackedddddd.png'))
             ->favicon(asset('images/favicon.ico'))
             ->colors([
                 'primary' => Color::Blue,
